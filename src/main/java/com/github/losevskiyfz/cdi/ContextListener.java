@@ -2,10 +2,7 @@ package com.github.losevskiyfz.cdi;
 
 import com.github.losevskiyfz.dao.PlayerDao;
 import com.github.losevskiyfz.dao.PlayerDaoImpl;
-import com.github.losevskiyfz.service.CurrentMatchesService;
-import com.github.losevskiyfz.service.CurrentMatchesServiceImpl;
-import com.github.losevskiyfz.service.MatchService;
-import com.github.losevskiyfz.service.MatchServiceImpl;
+import com.github.losevskiyfz.service.*;
 import com.github.losevskiyfz.validation.Validator;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -30,12 +27,16 @@ public class ContextListener implements ServletContextListener {
                 new PlayerDaoImpl()
         );
         context.register(
-                MatchService.class,
-                new MatchServiceImpl()
+                MatchesPersistenceService.class,
+                new MatchesPersistenceServiceImpl()
         );
         context.register(
-                CurrentMatchesService.class,
-                new CurrentMatchesServiceImpl()
+                OngoingMatchesService.class,
+                new OngoingMatchesServiceImpl()
+        );
+        context.register(
+                MatchScoreCalculationService.class,
+                new MatchScoreCalculationServiceImpl()
         );
         context.register(
                 Validator.class,

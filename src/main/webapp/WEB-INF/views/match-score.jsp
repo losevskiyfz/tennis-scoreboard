@@ -22,29 +22,40 @@
                 <th>Player</th>
                 <th>Sets</th>
                 <th>Games</th>
-                <th>Points</th>
+                <th>Scores</th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td>${p1}</td>
-                <td>${p1Sets}</td>
-                <td>${p1Games}</td>
-                <td>${p1Points}</td>
-                <td><button>Score</button></td>
+                <td>${match.p1Name}</td>
+                <td>${match.p1Sets}</td>
+                <td>${match.p1Games}</td>
+                <td>${match.p1Scores}</td>
+                <td>
+                    <form method="POST" action="/tennis-scoreboard/match-score">
+                        <input type="hidden" name="matchUuid" value="${matchUuid}" />
+                        <input type="hidden" name="playerNumber" value="1" />
+                        <button type="submit">Score</button>
+                    </form>
+                </td>
             </tr>
             <tr>
-                <td>${p2}</td>
-                <td>${p2Sets}</td>
-                <td>${p2Games}</td>
-                <td>${p2Points}</td>
-                <td><button>Score</button></td>
+                <td>${match.p2Name}</td>
+                <td>${match.p2Sets}</td>
+                <td>${match.p2Games}</td>
+                <td>${match.p2Scores}</td>
+                <td>
+                    <form method="POST" action="/tennis-scoreboard/match-score">
+                        <input type="hidden" name="matchUuid" value="${matchUuid}" />
+                        <input type="hidden" name="playerNumber" value="2" />
+                        <button type="submit">Score</button>
+                    </form>
+                </td>
             </tr>
             </tbody>
         </table>
     </div>
 </main>
 </body>
-
 </html>

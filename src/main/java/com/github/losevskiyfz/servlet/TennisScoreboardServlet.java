@@ -1,10 +1,14 @@
 package com.github.losevskiyfz.servlet;
 
 import com.github.losevskiyfz.cdi.ApplicationContext;
-import com.github.losevskiyfz.dto.CurrentMatchDto;
-import com.github.losevskiyfz.dto.TwoPlayersRequest;
-import com.github.losevskiyfz.service.CurrentMatchesService;
-import com.github.losevskiyfz.service.MatchService;
+import com.github.losevskiyfz.dto.*;
+import com.github.losevskiyfz.exception.GetMatchException;
+import com.github.losevskiyfz.exception.PostScoreException;
+import com.github.losevskiyfz.exception.WrongPlayerNumberException;
+import com.github.losevskiyfz.mapper.MatchMapper;
+import com.github.losevskiyfz.service.MatchScoreCalculationService;
+import com.github.losevskiyfz.service.OngoingMatchesService;
+import com.github.losevskiyfz.service.MatchesPersistenceService;
 import com.github.losevskiyfz.validation.Validator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -25,11 +29,13 @@ public class TennisScoreboardServlet extends HttpServlet {
     public static final String MATCH_SCORE_URL = "/match-score";
     public static final String WELCOME_URL = "/welcome";
     private static final Logger LOG = Logger.getLogger(TennisScoreboardServlet.class.getName());
+    private static final MatchMapper MATCH_MAPPER = MatchMapper.INSTANCE;
 
     private final ApplicationContext context = ApplicationContext.getInstance();
-    private final MatchService matchService = context.resolve(MatchService.class);
-    private final CurrentMatchesService currentMatchesService = context.resolve(CurrentMatchesService.class);
+    private final OngoingMatchesService ongoingMatchesService = context.resolve(OngoingMatchesService.class);
     private final Validator validator = context.resolve(Validator.class);
+    private final MatchesPersistenceService matchesPersistenceService = context.resolve(MatchesPersistenceService.class);
+    private final MatchScoreCalculationService matchScoreCalculationService = context.resolve(MatchScoreCalculationService.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -47,18 +53,14 @@ public class TennisScoreboardServlet extends HttpServlet {
                         !req.getParameter("uuid").isEmpty() &&
                         req.getParameter("uuid") != null
         ) {
-            String uuid = req.getParameter("uuid");
-            LOG.info(String.format("GET request to %s?uuid=%s", ROOT_URL + MATCH_SCORE_URL, uuid));
-            CurrentMatchDto currentMatchDto =
-                    currentMatchesService.getMatch(UUID.fromString(uuid)).orElseThrow();
-            req.setAttribute("p1", currentMatchDto.getP1().getName());
-            req.setAttribute("p2", currentMatchDto.getP2().getName());
-            req.setAttribute("p1Games", currentMatchDto.getP1Games());
-            req.setAttribute("p2Games", currentMatchDto.getP2Games());
-            req.setAttribute("p1Sets", currentMatchDto.getP1Sets());
-            req.setAttribute("p2Sets", currentMatchDto.getP2Sets());
-            req.setAttribute("p1Points", currentMatchDto.getP1Points());
-            req.setAttribute("p2Points", currentMatchDto.getP2Points());
+            String uuidParam = req.getParameter("uuid");
+            LOG.info(String.format("GET request to %s with uuid param: %s", ROOT_URL + MATCH_SCORE_URL, uuidParam));
+            UuidRequest uuidRequest = UuidRequest.builder().uuid(uuidParam).build();
+            validator.validate(uuidRequest);
+            CurrentMatch match = ongoingMatchesService.get(UUID.fromString(uuidRequest.getUuid()))
+                    .orElseThrow(() -> new GetMatchException("Match is not found in running matches"));
+            req.setAttribute("match", MATCH_MAPPER.toMatchScoreModel(match));
+            req.setAttribute("matchUuid", uuidRequest.getUuid());
             req.getRequestDispatcher("/WEB-INF/views/match-score.jsp").forward(req, resp);
         }
     }
@@ -74,10 +76,38 @@ public class TennisScoreboardServlet extends HttpServlet {
                     .player2(p2)
                     .build();
             validator.validate(playerPair);
-            CurrentMatchDto currentMatchDto = matchService.newMatch(playerPair.getPlayer1(), playerPair.getPlayer2());
             UUID matchUuid = UUID.randomUUID();
-            currentMatchesService.addMatch(matchUuid, currentMatchDto);
+            CurrentMatch newMatch = matchesPersistenceService.newMatch(p1, p2);
+            ongoingMatchesService.put(matchUuid, newMatch);
             resp.sendRedirect(String.format("%s?uuid=%s", ROOT_URL + MATCH_SCORE_URL, matchUuid));
+        } else if (
+                req.getRequestURI().equals(ROOT_URL + MATCH_SCORE_URL)
+        ) {
+            String uuid = req.getParameter("matchUuid");
+            String playerNumber = req.getParameter("playerNumber");
+            LOG.info(String.format("POST request to %s: matchUuid:%s, playerNumber:%s", NEW_MATCH_URL, uuid, playerNumber));
+            ScoreRequest matchRequest = ScoreRequest.builder()
+                    .matchUuid(uuid)
+                    .playerNumber(playerNumber)
+                    .build();
+            validator.validate(matchRequest);
+            PlayerNumber scoreWinner = parseNumber(matchRequest.getPlayerNumber());
+            CurrentMatch match = ongoingMatchesService
+                    .get(UUID.fromString(matchRequest.getMatchUuid()))
+                    .orElseThrow(() -> new PostScoreException("Match is not found in running matches"));
+            CurrentMatch calculatedMatch = matchScoreCalculationService.addScore(match, scoreWinner);
+            ongoingMatchesService.put(UUID.fromString(uuid), calculatedMatch);
+            resp.sendRedirect(String.format("%s?uuid=%s", ROOT_URL + MATCH_SCORE_URL, matchRequest.getMatchUuid()));
+        }
+    }
+
+    private PlayerNumber parseNumber(String number){
+        if (number.equals("1")){
+            return PlayerNumber.ONE;
+        } else if (number.equals("2")) {
+            return PlayerNumber.TWO;
+        } else {
+            throw new WrongPlayerNumberException("Number" + number + " is not proper player number");
         }
     }
 }

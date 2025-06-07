@@ -23,6 +23,7 @@
         <jboss.weld.core.version>2.4.8.Final</jboss.weld.core.version>
         <maven.compiler.plugin.version>3.14.0</maven.compiler.plugin.version>
         <org.mapstruct.version>1.6.3</org.mapstruct.version>
+        <com.fasterxml.jackson.version>2.19.0</com.fasterxml.jackson.version>
     </properties>
 
     <dependencies>
@@ -58,6 +59,11 @@
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>${org.mapstruct.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${com.fasterxml.jackson.version}</version>
         </dependency>
     </dependencies>
 
