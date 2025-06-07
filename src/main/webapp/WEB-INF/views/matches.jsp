@@ -9,6 +9,7 @@
     <title>
         Tennis Scoreboard
     </title>
+    <link rel="stylesheet" href="./css/matches.css">
 </head>
 
 <body>
@@ -24,7 +25,7 @@
       </form>
     </div>
     <div>
-        <table border="1">
+        <table>
             <thead>
             <tr>
                 <th>Player 1</th>

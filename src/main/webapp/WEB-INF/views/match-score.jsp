@@ -8,6 +8,7 @@
     <title>
         Tennis Scoreboard
     </title>
+    <link rel="stylesheet" href="./css/match-score.css">
 </head>
 
 <body>
@@ -16,7 +17,7 @@
         Current Match
     </h1>
     <div>
-        <table border="1">
+        <table>
             <thead>
             <tr>
                 <th>Player</th>

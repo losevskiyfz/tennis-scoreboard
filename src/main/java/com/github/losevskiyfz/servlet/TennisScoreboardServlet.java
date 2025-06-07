@@ -46,7 +46,7 @@ public class TennisScoreboardServlet extends HttpServlet {
         if (req.getRequestURI().equals(ROOT_URL + WELCOME_URL)) {
             LOG.info(String.format("GET request to %s", ROOT_URL + WELCOME_URL));
             req.setAttribute("newMatchUrl", ROOT_URL + NEW_MATCH_URL);
-            req.setAttribute("matchScoreUrl", ROOT_URL + MATCH_SCORE_URL);
+            req.setAttribute("matchesUrl", ROOT_URL + ENDED_MATCHES_URL);
             req.getRequestDispatcher("/WEB-INF/views/welcome.jsp").forward(req, resp);
         } else if (req.getRequestURI().equals(ROOT_URL + NEW_MATCH_URL)) {
             LOG.info(String.format("GET request to %s", ROOT_URL + NEW_MATCH_URL));
