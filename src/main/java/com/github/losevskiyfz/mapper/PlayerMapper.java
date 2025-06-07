@@ -9,4 +9,5 @@ import org.mapstruct.factory.Mappers;
 public interface PlayerMapper {
     PlayerMapper INSTANCE = Mappers.getMapper(PlayerMapper.class);
     PlayerDto toDto(Player player);
+    Player toEntity(PlayerDto playerDto);
 }

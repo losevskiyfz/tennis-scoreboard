@@ -1,5 +1,7 @@
 package com.github.losevskiyfz.cdi;
 
+import com.github.losevskiyfz.dao.MatchDao;
+import com.github.losevskiyfz.dao.MatchDaoImpl;
 import com.github.losevskiyfz.dao.PlayerDao;
 import com.github.losevskiyfz.dao.PlayerDaoImpl;
 import com.github.losevskiyfz.service.*;
@@ -25,6 +27,10 @@ public class ContextListener implements ServletContextListener {
         context.register(
                 PlayerDao.class,
                 new PlayerDaoImpl()
+        );
+        context.register(
+                MatchDao.class,
+                new MatchDaoImpl()
         );
         context.register(
                 MatchesPersistenceService.class,

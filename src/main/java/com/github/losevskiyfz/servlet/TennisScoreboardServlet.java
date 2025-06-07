@@ -2,6 +2,7 @@ package com.github.losevskiyfz.servlet;
 
 import com.github.losevskiyfz.cdi.ApplicationContext;
 import com.github.losevskiyfz.dto.*;
+import com.github.losevskiyfz.entity.Match;
 import com.github.losevskiyfz.exception.GetMatchException;
 import com.github.losevskiyfz.exception.PostScoreException;
 import com.github.losevskiyfz.exception.WrongPlayerNumberException;
@@ -27,10 +28,11 @@ public class TennisScoreboardServlet extends HttpServlet {
     public static final String ROOT_URL = "/tennis-scoreboard";
     public static final String NEW_MATCH_URL = "/new-match";
     public static final String MATCH_SCORE_URL = "/match-score";
-    public static final String WELCOME_URL = "/welcome";
+    public static final String ENDED_MATCHES_URL = "/matches";
+    public static final String WELCOME_URL = "";
     private static final Logger LOG = Logger.getLogger(TennisScoreboardServlet.class.getName());
-    private static final MatchMapper MATCH_MAPPER = MatchMapper.INSTANCE;
 
+    private final MatchMapper matchMapper = MatchMapper.INSTANCE;
     private final ApplicationContext context = ApplicationContext.getInstance();
     private final OngoingMatchesService ongoingMatchesService = context.resolve(OngoingMatchesService.class);
     private final Validator validator = context.resolve(Validator.class);
@@ -59,7 +61,7 @@ public class TennisScoreboardServlet extends HttpServlet {
             validator.validate(uuidRequest);
             CurrentMatch match = ongoingMatchesService.get(UUID.fromString(uuidRequest.getUuid()))
                     .orElseThrow(() -> new GetMatchException("Match is not found in running matches"));
-            req.setAttribute("match", MATCH_MAPPER.toMatchScoreModel(match));
+            req.setAttribute("match", matchMapper.toMatchScoreModel(match));
             req.setAttribute("matchUuid", uuidRequest.getUuid());
             req.getRequestDispatcher("/WEB-INF/views/match-score.jsp").forward(req, resp);
         }
@@ -100,8 +102,16 @@ public class TennisScoreboardServlet extends HttpServlet {
                     .get(UUID.fromString(uuidRequest.getUuid()))
                     .orElseThrow(() -> new PostScoreException("Match is not found in running matches"));
             CurrentMatch calculatedMatch = matchScoreCalculationService.addScore(match, scoreWinner);
-            ongoingMatchesService.put(UUID.fromString(uuid), calculatedMatch);
-            resp.sendRedirect(String.format("%s?uuid=%s", ROOT_URL + MATCH_SCORE_URL, uuidRequest.getUuid()));
+            if (isOver(calculatedMatch)){
+                CurrentMatch removedMatch = ongoingMatchesService.remove(UUID.fromString(uuid))
+                        .orElseThrow(() -> new PostScoreException("Match is not found in running matches"));
+                Match matchToSave = matchMapper.toMatch(removedMatch);
+                matchesPersistenceService.save(matchToSave);
+                resp.sendRedirect(ROOT_URL + ENDED_MATCHES_URL);
+            } else{
+                ongoingMatchesService.put(UUID.fromString(uuid), calculatedMatch);
+                resp.sendRedirect(String.format("%s?uuid=%s", ROOT_URL + MATCH_SCORE_URL, uuidRequest.getUuid()));
+            }
         }
     }
 
@@ -113,5 +123,15 @@ public class TennisScoreboardServlet extends HttpServlet {
         } else {
             throw new WrongPlayerNumberException("Number" + number + " is not proper player number");
         }
+    }
+
+    private boolean isOver(CurrentMatch match){
+        int p1Sets = Math.toIntExact(match.getSets().stream()
+                .filter(set -> set.getWinner().equals(PlayerNumber.ONE))
+                .count());
+        int p2Sets = Math.toIntExact(match.getSets().stream()
+                .filter(set -> set.getWinner().equals(PlayerNumber.TWO))
+                .count());
+        return p1Sets == 2 || p2Sets == 2;
     }
 }

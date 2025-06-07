@@ -1,6 +1,8 @@
 package com.github.losevskiyfz.mapper;
 
 import com.github.losevskiyfz.dto.*;
+import com.github.losevskiyfz.entity.Match;
+import com.github.losevskiyfz.entity.Player;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -8,7 +10,7 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-@Mapper
+@Mapper(uses = PlayerMapper.class)
 public interface MatchMapper {
     MatchMapper INSTANCE = Mappers.getMapper(MatchMapper.class);
 
@@ -22,7 +24,21 @@ public interface MatchMapper {
     @Mapping(source = "sets", target = "p2Sets", qualifiedByName = "countSetsP2")
     MatchScoreModel toMatchScoreModel(CurrentMatch match);
 
+    @Mapping(target = "winner", expression = "java(determineWinner(currentMatch))")
+    Match toMatch(CurrentMatch currentMatch);
+
     List<String> POINTS = List.of("0", "15", "30", "40");
+
+    default Player determineWinner(CurrentMatch match) {
+        int p1Sets = Math.toIntExact(match.getSets().stream()
+                .filter(set -> set.getWinner().equals(PlayerNumber.ONE))
+                .count());
+        if (p1Sets == 2)
+            return PlayerMapper.INSTANCE.toEntity(match.getPlayer1());
+        else {
+            return PlayerMapper.INSTANCE.toEntity(match.getPlayer2());
+        }
+    }
 
     @Named("mapP1Score")
     default String mapP1Score(CurrentMatch match) {

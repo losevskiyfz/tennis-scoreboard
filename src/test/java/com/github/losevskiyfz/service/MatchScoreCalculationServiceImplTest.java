@@ -34,7 +34,6 @@ class MatchScoreCalculationServiceImplTest {
                 .sets(new ArrayList<>())
                 .isTieBreak(false)
                 .isOverflow(false)
-                .isOver(false)
                 .build();
 
         MatchScoreModel expected = MatchScoreModel.builder()
@@ -69,7 +68,6 @@ class MatchScoreCalculationServiceImplTest {
                 .sets(new ArrayList<>())
                 .isTieBreak(false)
                 .isOverflow(false)
-                .isOver(false)
                 .build();
 
         MatchScoreModel expected = MatchScoreModel.builder()
@@ -104,7 +102,6 @@ class MatchScoreCalculationServiceImplTest {
                 .sets(new ArrayList<>())
                 .isTieBreak(false)
                 .isOverflow(false)
-                .isOver(false)
                 .build();
 
         MatchScoreModel expected = MatchScoreModel.builder()
@@ -146,7 +143,6 @@ class MatchScoreCalculationServiceImplTest {
                 .sets(new ArrayList<>())
                 .isTieBreak(false)
                 .isOverflow(false)
-                .isOver(false)
                 .build();
 
         MatchScoreModel expected = MatchScoreModel.builder()
@@ -189,7 +185,6 @@ class MatchScoreCalculationServiceImplTest {
                 .sets(new ArrayList<>())
                 .isTieBreak(true)
                 .isOverflow(false)
-                .isOver(false)
                 .build();
 
         MatchScoreModel expected = MatchScoreModel.builder()
@@ -231,7 +226,6 @@ class MatchScoreCalculationServiceImplTest {
                 .sets(new ArrayList<>())
                 .isTieBreak(true)
                 .isOverflow(false)
-                .isOver(false)
                 .build();
 
         MatchScoreModel expected = MatchScoreModel.builder()
@@ -274,7 +268,6 @@ class MatchScoreCalculationServiceImplTest {
                 .sets(new ArrayList<>())
                 .isTieBreak(true)
                 .isOverflow(false)
-                .isOver(false)
                 .build();
 
         MatchScoreModel expected = MatchScoreModel.builder()
@@ -316,7 +309,6 @@ class MatchScoreCalculationServiceImplTest {
                 .sets(new ArrayList<>())
                 .isTieBreak(true)
                 .isOverflow(false)
-                .isOver(false)
                 .build();
 
         MatchScoreModel expected = MatchScoreModel.builder()
@@ -351,7 +343,6 @@ class MatchScoreCalculationServiceImplTest {
                 )
                 .isTieBreak(false)
                 .isOverflow(false)
-                .isOver(false)
                 .build();
 
         MatchScoreModel expected = MatchScoreModel.builder()

@@ -1,8 +1,10 @@
 package com.github.losevskiyfz.service;
 
 import com.github.losevskiyfz.cdi.ApplicationContext;
+import com.github.losevskiyfz.dao.MatchDao;
 import com.github.losevskiyfz.dao.PlayerDao;
 import com.github.losevskiyfz.dto.CurrentMatch;
+import com.github.losevskiyfz.entity.Match;
 import com.github.losevskiyfz.entity.Player;
 import com.github.losevskiyfz.mapper.PlayerMapper;
 import jakarta.persistence.EntityManagerFactory;
@@ -19,6 +21,7 @@ public class MatchesPersistenceServiceImpl implements MatchesPersistenceService 
     private final EntityManagerFactory emf = context.resolve(EntityManagerFactory.class);
     private static final Logger LOG = Logger.getLogger(MatchesPersistenceServiceImpl.class.getName());
     private final PlayerMapper mapper = PlayerMapper.INSTANCE;
+    private final MatchDao matchDao = context.resolve(MatchDao.class);
 
     @Override
     public CurrentMatch newMatch(String player1, String player2) {
@@ -32,7 +35,17 @@ public class MatchesPersistenceServiceImpl implements MatchesPersistenceService 
                 .games(new ArrayList<>())
                 .sets(new ArrayList<>())
                 .isTieBreak(false)
+                .isOverflow(false)
                 .build();
+    }
+
+    @Override
+    public Match save(Match match) {
+        LOG.info(String.format("Persisting match between %s and %s, winner: %s", match.getPlayer1(), match.getPlayer2(), match.getWinner()));
+        return executeInTransaction(
+                emf,
+                em -> matchDao.save(match, em)
+        );
     }
 
     private Player getOrCreatePlayer(String playerName) {

@@ -16,6 +16,5 @@ public class CurrentMatch {
     List<Game> games;
     List<Score> scores;
     boolean isTieBreak;
-    boolean isOver;
     boolean isOverflow;
 }
