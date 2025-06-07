@@ -33,8 +33,7 @@
                 <td>${match.p1Games}</td>
                 <td>${match.p1Scores}</td>
                 <td>
-                    <form method="POST" action="/tennis-scoreboard/match-score">
-                        <input type="hidden" name="matchUuid" value="${matchUuid}" />
+                    <form method="POST" action="/tennis-scoreboard/match-score?uuid=${matchUuid}">
                         <input type="hidden" name="playerNumber" value="1" />
                         <button type="submit">Score</button>
                     </form>
@@ -46,8 +45,7 @@
                 <td>${match.p2Games}</td>
                 <td>${match.p2Scores}</td>
                 <td>
-                    <form method="POST" action="/tennis-scoreboard/match-score">
-                        <input type="hidden" name="matchUuid" value="${matchUuid}" />
+                    <form method="POST" action="/tennis-scoreboard/match-score?uuid=${matchUuid}">
                         <input type="hidden" name="playerNumber" value="2" />
                         <button type="submit">Score</button>
                     </form>

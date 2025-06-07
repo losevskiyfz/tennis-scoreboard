@@ -8,6 +8,5 @@ import lombok.Setter;
 @Setter
 @Builder
 public class ScoreRequest {
-    String matchUuid;
     String playerNumber;
 }

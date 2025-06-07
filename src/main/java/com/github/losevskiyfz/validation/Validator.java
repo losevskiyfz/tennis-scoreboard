@@ -32,19 +32,11 @@ public class Validator {
     }
 
     private void validateScoreRequest(ScoreRequest request) {
-        if (request.getMatchUuid() == null || request.getMatchUuid().isEmpty()){
-            throw new BadScoreRequestException("matchUuid param is not provided");
-        }
         if (request.getPlayerNumber() == null || request.getPlayerNumber().isEmpty()){
             throw new BadScoreRequestException("playerNumber param is not provided");
         }
         if (!Objects.equals(request.getPlayerNumber(), "1") && !Objects.equals(request.getPlayerNumber(), "2")) {
             throw new BadScoreRequestException("Player number may be only 1 or 2");
-        }
-        try {
-            UUID.fromString(request.getMatchUuid());
-        } catch (IllegalArgumentException e){
-            throw new BadScoreRequestException("Provided uuid is not valid");
         }
     }
 

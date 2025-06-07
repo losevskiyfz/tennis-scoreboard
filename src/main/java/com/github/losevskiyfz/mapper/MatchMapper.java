@@ -14,22 +14,50 @@ public interface MatchMapper {
 
     @Mapping(source = "player1.name", target = "p1Name")
     @Mapping(source = "player2.name", target = "p2Name")
-    @Mapping(source = "scores", target = "p1Scores", qualifiedByName = "countScoresP1")
-    @Mapping(source = "scores", target = "p2Scores", qualifiedByName = "countScoresP2")
+    @Mapping(source = "match", target = "p1Scores", qualifiedByName = "mapP1Score")
+    @Mapping(source = "match", target = "p2Scores", qualifiedByName = "mapP2Score")
     @Mapping(source = "games", target = "p1Games", qualifiedByName = "countGamesP1")
     @Mapping(source = "games", target = "p2Games", qualifiedByName = "countGamesP2")
     @Mapping(source = "sets", target = "p1Sets", qualifiedByName = "countSetsP1")
     @Mapping(source = "sets", target = "p2Sets", qualifiedByName = "countSetsP2")
     MatchScoreModel toMatchScoreModel(CurrentMatch match);
 
-    @Named("countScoresP1")
-    default String countScoresP1(List<Score> scores) {
-        return String.valueOf(scores.stream().filter(s -> s.getWinner() == PlayerNumber.ONE).count());
+    List<String> POINTS = List.of("0", "15", "30", "40");
+
+    @Named("mapP1Score")
+    default String mapP1Score(CurrentMatch match) {
+        int p1 = (int) match.getScores().stream().filter(s -> s.getWinner() == PlayerNumber.ONE).count();
+        int p2 = (int) match.getScores().stream().filter(s -> s.getWinner() == PlayerNumber.TWO).count();
+
+        if (match.isTieBreak()) {
+            return String.valueOf(p1);
+        }
+
+        if (p1 >= 3 && p2 >= 3) {
+            if (p1 == p2) return "40";
+            if (p1 > p2) return "AD";
+            return "40";
+        }
+
+        return p1 < POINTS.size() ? POINTS.get(p1) : "40";
     }
 
-    @Named("countScoresP2")
-    default String countScoresP2(List<Score> scores) {
-        return String.valueOf(scores.stream().filter(s -> s.getWinner() == PlayerNumber.TWO).count());
+    @Named("mapP2Score")
+    default String mapP2Score(CurrentMatch match) {
+        int p1 = (int) match.getScores().stream().filter(s -> s.getWinner() == PlayerNumber.ONE).count();
+        int p2 = (int) match.getScores().stream().filter(s -> s.getWinner() == PlayerNumber.TWO).count();
+
+        if (match.isTieBreak()) {
+            return String.valueOf(p2);
+        }
+
+        if (p1 >= 3 && p2 >= 3) {
+            if (p1 == p2) return "40";
+            if (p1 > p2) return "40";
+            return "AD";
+        }
+
+        return p2 < POINTS.size() ? POINTS.get(p2) : "40";
     }
 
     @Named("countGamesP1")

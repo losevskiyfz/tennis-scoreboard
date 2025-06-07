@@ -81,28 +81,32 @@ public class TennisScoreboardServlet extends HttpServlet {
             ongoingMatchesService.put(matchUuid, newMatch);
             resp.sendRedirect(String.format("%s?uuid=%s", ROOT_URL + MATCH_SCORE_URL, matchUuid));
         } else if (
-                req.getRequestURI().equals(ROOT_URL + MATCH_SCORE_URL)
+                req.getRequestURI().startsWith(ROOT_URL + MATCH_SCORE_URL) &&
+                        !req.getParameter("uuid").isEmpty() &&
+                        req.getParameter("uuid") != null
         ) {
-            String uuid = req.getParameter("matchUuid");
+            String uuid = req.getParameter("uuid");
             String playerNumber = req.getParameter("playerNumber");
-            LOG.info(String.format("POST request to %s: matchUuid:%s, playerNumber:%s", NEW_MATCH_URL, uuid, playerNumber));
+            LOG.info(String.format("POST request to %s, playerNumber:%s", MATCH_SCORE_URL + "?uuid=" + uuid, playerNumber));
             ScoreRequest matchRequest = ScoreRequest.builder()
-                    .matchUuid(uuid)
                     .playerNumber(playerNumber)
+                    .build();
+            UuidRequest uuidRequest = UuidRequest.builder()
+                    .uuid(uuid)
                     .build();
             validator.validate(matchRequest);
             PlayerNumber scoreWinner = parseNumber(matchRequest.getPlayerNumber());
             CurrentMatch match = ongoingMatchesService
-                    .get(UUID.fromString(matchRequest.getMatchUuid()))
+                    .get(UUID.fromString(uuidRequest.getUuid()))
                     .orElseThrow(() -> new PostScoreException("Match is not found in running matches"));
             CurrentMatch calculatedMatch = matchScoreCalculationService.addScore(match, scoreWinner);
             ongoingMatchesService.put(UUID.fromString(uuid), calculatedMatch);
-            resp.sendRedirect(String.format("%s?uuid=%s", ROOT_URL + MATCH_SCORE_URL, matchRequest.getMatchUuid()));
+            resp.sendRedirect(String.format("%s?uuid=%s", ROOT_URL + MATCH_SCORE_URL, uuidRequest.getUuid()));
         }
     }
 
-    private PlayerNumber parseNumber(String number){
-        if (number.equals("1")){
+    private PlayerNumber parseNumber(String number) {
+        if (number.equals("1")) {
             return PlayerNumber.ONE;
         } else if (number.equals("2")) {
             return PlayerNumber.TWO;

@@ -17,4 +17,5 @@ public class CurrentMatch {
     List<Score> scores;
     boolean isTieBreak;
     boolean isOver;
+    boolean isOverflow;
 }

@@ -3,12 +3,18 @@ package com.github.losevskiyfz.service;
 import com.github.losevskiyfz.dto.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MatchScoreCalculationServiceImpl implements MatchScoreCalculationService {
+
+    public MatchScoreCalculationServiceImpl() {
+    }
+
     @Override
     public CurrentMatch addScore(CurrentMatch match, PlayerNumber winner) {
         if (isMatchOver(match)) return match;
         match.getScores().add(Score.builder().winner(winner).build());
+        scoreBoardOverflowCheck(match);
         return renderMatch(match);
     }
 
@@ -27,15 +33,30 @@ public class MatchScoreCalculationServiceImpl implements MatchScoreCalculationSe
                 return renderGames(match);
             }
         } else {
-            if (p1Scores >= 7 && p1Scores - p2Scores >= 2) {
-                resetScores(match);
-                match.getGames().add(Game.builder().winner(PlayerNumber.ONE).build());
-                return renderGames(match);
-            }
-            if (p2Scores >= 7 && p2Scores - p1Scores >= 2) {
-                resetScores(match);
-                match.getGames().add(Game.builder().winner(PlayerNumber.TWO).build());
-                return renderGames(match);
+            if (match.isOverflow()){
+                if (p1Scores - p2Scores >= 2){
+                    resetScores(match);
+                    match.getGames().add(Game.builder().winner(PlayerNumber.ONE).build());
+                    match.setOverflow(false);
+                    return renderGames(match);
+                }
+                if (p2Scores - p1Scores >= 2){
+                    resetScores(match);
+                    match.getGames().add(Game.builder().winner(PlayerNumber.TWO).build());
+                    match.setOverflow(false);
+                    return renderGames(match);
+                }
+            } else {
+                if (p1Scores >= 7 && p1Scores - p2Scores >= 2) {
+                    resetScores(match);
+                    match.getGames().add(Game.builder().winner(PlayerNumber.ONE).build());
+                    return renderGames(match);
+                }
+                if (p2Scores >= 7 && p2Scores - p1Scores >= 2) {
+                    resetScores(match);
+                    match.getGames().add(Game.builder().winner(PlayerNumber.TWO).build());
+                    return renderGames(match);
+                }
             }
         }
         return match;
@@ -93,5 +114,20 @@ public class MatchScoreCalculationServiceImpl implements MatchScoreCalculationSe
         return Math.toIntExact(match.getScores().stream()
                 .filter(score -> score.getWinner().equals(playerNumber))
                 .count());
+    }
+
+    private void scoreBoardOverflowCheck(CurrentMatch match) {
+        if (match.isTieBreak() && wonScoresForPlayer(match, PlayerNumber.ONE) == 100){
+            match.setScores(
+                    new ArrayList<>(List.of(Score.builder().winner(PlayerNumber.ONE).build()))
+            );
+            match.setOverflow(true);
+        }
+        if (match.isTieBreak() && wonScoresForPlayer(match, PlayerNumber.TWO) == 100){
+            match.setScores(
+                    new ArrayList<>(List.of(Score.builder().winner(PlayerNumber.TWO).build()))
+            );
+            match.setOverflow(true);
+        }
     }
 }
