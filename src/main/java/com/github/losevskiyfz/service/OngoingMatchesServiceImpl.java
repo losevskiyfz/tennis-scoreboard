@@ -18,7 +18,7 @@ public class OngoingMatchesServiceImpl implements OngoingMatchesService {
         currentMatches.put(matchId, currentMatchDto);
     }
     @Override
-    public Optional<CurrentMatch> removeMatch(UUID matchId) {
+    public Optional<CurrentMatch> remove(UUID matchId) {
         LOG.info(String.format("Removing match with id %s", matchId));
         return Optional.ofNullable(currentMatches.remove(matchId));
     }

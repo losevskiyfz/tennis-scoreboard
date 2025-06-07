@@ -7,6 +7,6 @@ import java.util.UUID;
 
 public interface OngoingMatchesService {
     void put(UUID matchId, CurrentMatch currentMatchDto);
-    Optional<CurrentMatch> removeMatch(UUID matchId);
+    Optional<CurrentMatch> remove(UUID matchId);
     Optional<CurrentMatch> get(UUID matchId);
 }
