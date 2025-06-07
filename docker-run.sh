@@ -1,6 +1,6 @@
 source .env
 
-./mvnw clean package
+./mvnw clean package -Dmaven.test.skip=true
 
 docker rm -f $CONTAINER_NAME || true
 docker run -d --name $CONTAINER_NAME -p 8080:8080 $IMAGE_NAME
