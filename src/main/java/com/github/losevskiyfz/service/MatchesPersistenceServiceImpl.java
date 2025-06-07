@@ -11,6 +11,7 @@ import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.exception.ConstraintViolationException;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import static com.github.losevskiyfz.utils.TransactionUtils.executeInTransaction;
@@ -45,6 +46,15 @@ public class MatchesPersistenceServiceImpl implements MatchesPersistenceService 
         return executeInTransaction(
                 emf,
                 em -> matchDao.save(match, em)
+        );
+    }
+
+    @Override
+    public List<Match> findByNamePaged(int pageNumber, int pageSize, String nameFilter) {
+        LOG.info(String.format("Looking for matches, pageNumber:%s, pageSize:%s, nameFilter:%s", pageNumber, pageSize, nameFilter));
+        return executeInTransaction(
+                emf,
+                em -> matchDao.findByMatchPaged(pageNumber, pageSize, nameFilter, em)
         );
     }
 
