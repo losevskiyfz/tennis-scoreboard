@@ -16,7 +16,7 @@
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
         <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
         <jakarta.enterprise.cdi.version>4.1.0</jakarta.enterprise.cdi.version>
-        <hibernate.version>6.6.13.Final</hibernate.version>
+        <hibernate.version>7.0.0.Final</hibernate.version>
         <h2database.version>2.3.232</h2database.version>
         <projectlombok.version>1.18.38</projectlombok.version>
         <jboss.weld.servlet.version>6.0.2.Final</jboss.weld.servlet.version>
@@ -26,6 +26,7 @@
         <com.fasterxml.jackson.version>2.19.0</com.fasterxml.jackson.version>
         <org.junit.jupiter.version>5.13.0</org.junit.jupiter.version>
         <jakarta.servlet.jsp.jstl.version>3.0.1</jakarta.servlet.jsp.jstl.version>
+        <slf4j-simple.version>2.0.17</slf4j-simple.version>
     </properties>
 
     <dependencies>
@@ -50,6 +51,12 @@
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>${hibernate.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-hikaricp</artifactId>
+            <version>${hibernate.version}</version>
+            <type>pom</type>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
