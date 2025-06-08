@@ -25,7 +25,7 @@ public class ExceptionHandler implements Filter {
 
         try {
             chain.doFilter(request, response);
-        } catch (BadPlayerNameException | BadScoreRequestException | PostScoreException e) {
+        } catch (BadPlayerNameException | BadScoreRequestException | PostScoreException | IllegalArgumentException e) {
             LOG.warning(getStackTraceAsString(e));
             httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             httpResponse.setContentType("application/json");
