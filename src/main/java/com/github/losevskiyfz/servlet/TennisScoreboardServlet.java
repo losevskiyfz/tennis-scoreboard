@@ -30,7 +30,7 @@ public class TennisScoreboardServlet extends HttpServlet {
     public static final String NEW_MATCH_URL = "/new-match";
     public static final String MATCH_SCORE_URL = "/match-score";
     public static final String ENDED_MATCHES_URL = "/matches";
-    public static final String WELCOME_URL = "";
+    public static final String WELCOME_URL = "/welcome";
     private static final Logger LOG = Logger.getLogger(TennisScoreboardServlet.class.getName());
     private static final int PAGE_SIZE = 5;
 
