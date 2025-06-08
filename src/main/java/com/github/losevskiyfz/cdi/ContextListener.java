@@ -1,5 +1,6 @@
 package com.github.losevskiyfz.cdi;
 
+import com.github.losevskiyfz.conf.DbProperties;
 import com.github.losevskiyfz.dao.MatchDao;
 import com.github.losevskiyfz.dao.MatchDaoImpl;
 import com.github.losevskiyfz.dao.PlayerDao;
@@ -21,8 +22,12 @@ public class ContextListener implements ServletContextListener {
 
     private void initializeApplicationContext() {
         context.register(
+                DbProperties.class,
+                new DbProperties()
+        );
+        context.register(
                 EntityManagerFactory.class,
-                Persistence.createEntityManagerFactory("tennisScoreboardPU")
+                Persistence.createEntityManagerFactory("tennisScoreboardPU", context.resolve(DbProperties.class))
         );
         context.register(
                 PlayerDao.class,
