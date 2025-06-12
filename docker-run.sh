@@ -3,7 +3,8 @@ source .env
 ./mvnw clean package -Dmaven.test.skip=true
 
 docker rm -f $CONTAINER_NAME || true
-docker run -d --name $CONTAINER_NAME -p 8080:8080 $IMAGE_NAME
-docker cp target/tennis-scoreboard.war $CONTAINER_NAME:/usr/local/tomcat/webapps/
-docker exec $CONTAINER_NAME catalina.sh stop
-docker exec $CONTAINER_NAME catalina.sh start
+docker run -d \
+  --name $CONTAINER_NAME \
+  -p 8080:8080 \
+  -v $(pwd)/target/tennis-scoreboard.war:/usr/local/tomcat/webapps/tennis-scoreboard.war \
+  $IMAGE_NAME
