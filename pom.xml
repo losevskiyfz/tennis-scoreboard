@@ -15,12 +15,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
         <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
-        <jakarta.enterprise.cdi.version>4.1.0</jakarta.enterprise.cdi.version>
         <hibernate.version>6.6.17.Final</hibernate.version>
         <h2database.version>2.3.232</h2database.version>
         <projectlombok.version>1.18.38</projectlombok.version>
-        <jboss.weld.servlet.version>6.0.2.Final</jboss.weld.servlet.version>
-        <jboss.weld.core.version>2.4.8.Final</jboss.weld.core.version>
         <maven.compiler.plugin.version>3.14.0</maven.compiler.plugin.version>
         <org.mapstruct.version>1.6.3</org.mapstruct.version>
         <com.fasterxml.jackson.version>2.19.0</com.fasterxml.jackson.version>
