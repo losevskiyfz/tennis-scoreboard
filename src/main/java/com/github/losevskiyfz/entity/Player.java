@@ -8,9 +8,6 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode
 public class Player {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -8,9 +8,6 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode
 public class Match {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
