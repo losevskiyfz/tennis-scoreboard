@@ -1,0 +1,67 @@
+/* Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Body Styling */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #fff3f3;
+  color: #333;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navigation Bar */
+nav {
+  background-color: #222;
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* Main Content */
+main {
+  flex: 1;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Error Message Styling */
+main span {
+  font-size: 1.5rem;
+  color: #d32f2f;
+  background-color: #ffcdd2;
+  padding: 1rem 2rem;
+  border: 1px solid #f44336;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 90%;
+  word-wrap: break-word;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+  main span {
+    font-size: 1.2rem;
+    padding: 1rem;
+  }
+}

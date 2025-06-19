@@ -8,6 +8,7 @@
         <title>
             Tennis Scoreboard
         </title>
+        <link rel="stylesheet" href="./css/matches.css" />
     </head>
 
     <body>

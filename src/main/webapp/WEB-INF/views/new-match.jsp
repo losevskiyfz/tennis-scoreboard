@@ -6,6 +6,7 @@
         <title>
             Tennis Scoreboard
         </title>
+        <link rel="stylesheet" href="./css/new-match.css" />
     </head>
     <body>
         <nav>
