@@ -16,8 +16,8 @@ public interface MatchMapper {
 
     @Mapping(source = "player1.name", target = "p1Name")
     @Mapping(source = "player2.name", target = "p2Name")
-    @Mapping(source = "match", target = "p1Scores", qualifiedByName = "mapP1Score")
-    @Mapping(source = "match", target = "p2Scores", qualifiedByName = "mapP2Score")
+    @Mapping(target = "p1Scores", expression = "java(countP1Score(match))")
+    @Mapping(target = "p2Scores", expression = "java(countP2Score(match))")
     @Mapping(source = "games", target = "p1Games", qualifiedByName = "countGamesP1")
     @Mapping(source = "games", target = "p2Games", qualifiedByName = "countGamesP2")
     @Mapping(source = "sets", target = "p1Sets", qualifiedByName = "countSetsP1")
@@ -25,6 +25,7 @@ public interface MatchMapper {
     MatchScoreModel toMatchScoreModel(CurrentMatch match);
 
     @Mapping(target = "winner", expression = "java(determineWinner(currentMatch))")
+    @Mapping(target = "id", ignore = true)
     Match toMatch(CurrentMatch currentMatch);
 
     List<String> POINTS = List.of("0", "15", "30", "40");
@@ -40,8 +41,7 @@ public interface MatchMapper {
         }
     }
 
-    @Named("mapP1Score")
-    default String mapP1Score(CurrentMatch match) {
+    default String countP1Score(CurrentMatch match) {
         int p1 = (int) match.getScores().stream().filter(s -> s.getWinner() == PlayerNumber.ONE).count();
         int p2 = (int) match.getScores().stream().filter(s -> s.getWinner() == PlayerNumber.TWO).count();
 
@@ -58,8 +58,7 @@ public interface MatchMapper {
         return p1 < POINTS.size() ? POINTS.get(p1) : "40";
     }
 
-    @Named("mapP2Score")
-    default String mapP2Score(CurrentMatch match) {
+    default String countP2Score(CurrentMatch match) {
         int p1 = (int) match.getScores().stream().filter(s -> s.getWinner() == PlayerNumber.ONE).count();
         int p2 = (int) match.getScores().stream().filter(s -> s.getWinner() == PlayerNumber.TWO).count();
 
