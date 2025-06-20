@@ -38,23 +38,27 @@ public class MatchScoreCalculationServiceImpl implements MatchScoreCalculationSe
                     resetScores(match);
                     match.getGames().add(Game.builder().winner(PlayerNumber.ONE).build());
                     match.setOverflow(false);
+                    match.setTieBreak(false);
                     return renderGames(match);
                 }
                 if (p2Scores - p1Scores >= 2){
                     resetScores(match);
                     match.getGames().add(Game.builder().winner(PlayerNumber.TWO).build());
                     match.setOverflow(false);
+                    match.setTieBreak(false);
                     return renderGames(match);
                 }
             } else {
                 if (p1Scores >= 7 && p1Scores - p2Scores >= 2) {
                     resetScores(match);
                     match.getGames().add(Game.builder().winner(PlayerNumber.ONE).build());
+                    match.setTieBreak(false);
                     return renderGames(match);
                 }
                 if (p2Scores >= 7 && p2Scores - p1Scores >= 2) {
                     resetScores(match);
                     match.getGames().add(Game.builder().winner(PlayerNumber.TWO).build());
+                    match.setTieBreak(false);
                     return renderGames(match);
                 }
             }
