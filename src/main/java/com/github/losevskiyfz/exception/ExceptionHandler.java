@@ -1,7 +1,5 @@
 package com.github.losevskiyfz.exception;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.losevskiyfz.dto.ErrorResponse;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
